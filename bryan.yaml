@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-  "this is our first EC2 instance"
+  "this is our first EC2 template"
 Resources:
   #Vpc
   myVPC:
