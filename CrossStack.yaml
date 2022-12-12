@@ -1,0 +1,61 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  "this is our first EC2 instance"
+
+Mappings: 
+  RegionAndInstanceTypeToAMIID: 
+    us-east-1: #Top Key Level
+      test: "ami-8ff710e2" # Top Key Level key
+      prod: "ami-f5f41398"
+    us-west-2: 
+      test: "ami-094125af156557ca2"
+      prod: "ami-094125af156557ca2"
+
+Parameters: 
+  EnvironmentType: 
+    Description: The environment type
+    Type: String
+    Default: test
+    AllowedValues: 
+      - prod
+      - test
+    ConstraintDescription: must be a prod or test
+
+Resources:      
+  Ec2Instance: #Logical Name
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: "t2.micro"
+      ImageId: !FindInMap [RegionAndInstanceTypeToAMIID, !Ref AWS::Region ,!Ref EnvironmentType]
+      SubnetId: !ImportValue SampleNetworkCrossStack-SubnetID
+      SecurityGroupIds:
+      - !ImportValue SampleNetworkCrossStack-SecurityGroupID
+      Tags: #Adding a tag
+      - Key: "Name"
+        Value: "Ines"   
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systmctl start httpd
+          systmctl enable httpd
+          echo "Welcom to my Website" > /var/www/html/index.html
+
+  MyEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref Ec2Instance
+Outputs:
+  EC2InstanceeOutput:
+    Description: This output will display the private ip address of the instance
+    Value: !GetAtt Ec2Instance.PrivateIp
+  EC2PublicIP:
+    Description: This output will display the DNS address of the instance
+    Value: !GetAtt Ec2Instance.PublicIp 
+
+
+
+
+ 
