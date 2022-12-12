@@ -1,4 +1,4 @@
-# this is the testing template
+# this is the testing template Ec2
 Parameters:
   InstanceTypeParameter:
     Type: String
