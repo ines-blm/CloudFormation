@@ -1,0 +1,52 @@
+# FIRST PLAY
+---
+- name: setting up apache webserver on amazon linux servers
+  hosts: linux-nodes
+
+  tasks:
+    - name: Upgrade all packages on the server
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+    - name: Install the latest version of Apache on the server
+      ansible.builtin.yum:
+        name: httpd
+        state: latest
+    - name: Start service httpd, if not started # systemctl start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+    - name: Enable service httpd at server launch # systemctl enable httpd
+      ansible.builtin.service: 
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+    - name: Copy index.html file from the controller to the nodes at /var/www/html/
+      ansible.builtin.copy:
+        src: /root/web/index.html
+        dest: /var/www/html/
+
+# SECOND PAY
+- name: ping all the servers
+  hosts: all
+
+  tasks: 
+    - name: Example from an Ansible Playbook
+      ansible.builtin.ping:
+
+# THIRD PLAY 
+- name: Install git
+  hosts: ubuntu-nodes
+  become: yes
+
+  tasks:
+    - name: Update all package
+      apt: 
+        name: '*'
+        state: present
+    - name: Install git
+      apt:
+       name: git
+       state: present
+       update_cache: yes
+
