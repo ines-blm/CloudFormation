@@ -1,4 +1,4 @@
-# FIRST PLAY
+# this playbook is for server configuration
 ---
 - name: setting up apache webserver on amazon linux servers
   hosts: linux-nodes
@@ -40,7 +40,6 @@
        state: present
        update_cache: yes
 
-# SECOND PAY
 - name: setting up apache webserver on amazon linux servers
   hosts: ubuntu-nodes
 
@@ -81,7 +80,6 @@
        state: present
        update_cache: yes
 
-# THIRD PAY
 - name: ping all the servers
   hosts: all
 
