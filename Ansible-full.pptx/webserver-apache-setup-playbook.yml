@@ -11,7 +11,7 @@
     - name: Install the latest version of Apache on the server
       ansible.builtin.yum:
         name: httpd
-        state: latest
+        state:  present
     - name: Start service httpd, if not started # systemctl start httpd
       ansible.builtin.service:
         name: httpd
