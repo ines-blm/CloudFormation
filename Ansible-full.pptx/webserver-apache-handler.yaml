@@ -1,0 +1,101 @@
+# THIS PLAYBOOK TO INSTALL APACHE, HANDLER  AND  NOTIFY
+---
+- name: setting up apache webserver on amazon linux servers
+  hosts: linux-nodes
+  vars_files: 
+    - variables.yml # variable files
+  tasks:
+    - name: Upgrade all packages on the server # yum update -y
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+    - name: Install the latest version of Apache on the server # yum install httpd -y
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+    - name: using debug module to print something
+      ansible.builtin.debug:
+        msg: this module will print the name of student {{ student_name}} on the sceen when template runs
+    - name: Start Apache # systemctl start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+    - name: Enable service httpd at server launch # systemctl enable httpd
+      ansible.builtin.service: 
+        name: httpd
+        enabled: yes
+    - name: Copy index.html file from the controller to the nodes at /var/www/html/
+      ansible.builtin.copy:
+        src: /root/web/index.html
+        dest: /var/www/html/
+      notify:
+        - restarting apache
+  handlers:
+    - name: restarting apache # sytemctl start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted    
+
+- name: Install git
+  hosts: linux-nodes
+  become: yes
+
+  tasks:
+    - name: Update all package
+      yum: 
+        name: '*'
+        state: present
+    - name: Install git
+      yum:
+       name: git
+       state: present
+       update_cache: yes
+
+# apache webserver on ubuntu
+- name: setting up apache webserver on ubuntu servers
+  hosts: ubuntu-nodes
+
+  tasks:
+    - name: Upgrade all packages on the server
+      ansible.builtin.apt:
+        name: '*'
+        state: latest
+    - name: Install apache on the server
+      ansible.builtin.yum:
+        name: apache2
+        state: present
+    - name: Start service httpd, if not started # systemctl start apache2
+      ansible.builtin.service:
+        name: apache2
+        state: started
+    - name: Enable service httpd at server launch # systemctl enable apache2
+      ansible.builtin.service: 
+        name: apache2
+        enabled: yes
+    - name: Copy index.html file from the controller to the nodes at /var/www/html/
+      ansible.builtin.copy:
+        src: /root/web/index.html
+        dest: /var/www/html/
+
+- name: Install git
+  hosts: ubuntu-nodes
+  become: yes
+
+  tasks:
+    - name: Update all package
+      apt: 
+        name: '*'
+        state: present
+    - name: Install git
+      apt:
+       name: git
+       state: present
+       update_cache: yes
+
+# ping the server
+- name: ping all the servers
+  hosts: all
+
+  tasks: 
+    - name: Example from an Ansible Playbook
+      ansible.builtin.ping:
