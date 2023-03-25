@@ -1,4 +1,4 @@
-# FIRST PLAY
+# this playbook is for server configuration
 ---
 - name: setting up apache webserver on amazon linux servers
   hosts: linux-nodes
@@ -11,7 +11,7 @@
     - name: Install the latest version of Apache on the server
       ansible.builtin.yum:
         name: httpd
-        state: latest
+        state:  present
     - name: Start service httpd, if not started # systemctl start httpd
       ansible.builtin.service:
         name: httpd
@@ -40,7 +40,6 @@
        state: present
        update_cache: yes
 
-# SECOND PAY
 - name: setting up apache webserver on amazon linux servers
   hosts: ubuntu-nodes
 
@@ -81,7 +80,6 @@
        state: present
        update_cache: yes
 
-# THIRD PAY
 - name: ping all the servers
   hosts: all
 
